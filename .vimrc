@@ -5,8 +5,6 @@
 "
 "   You can find me at https://github.com/wlk1204/wlk1204-vim
 "
-"   Copyright 2014 Steve Francia
-"
 " }
 
 " Environment {
@@ -49,29 +47,18 @@
 
 " General {
 
-    " Allow to trigger background
-    function! ToggleBG()
-        let s:tbg = &background
-        " Inversion
-        if s:tbg == "dark"
-            set background=light
-        else
-            set background=dark
-        endif
-    endfunction
-    noremap <leader>bg :call ToggleBG()<CR>
-
-    let NERDTreeShowHidden=1 " show hidden files
-    set nobackup       " no backup files
-    set nowritebackup  " only in case you don't want a backup file while editing
+    " syntax on                   " Syntax highlighting
+    " set autowrite                       " Automatically write a file when leaving a modified buffer
     " set noswapfile     " no swap files
     " set noundofile
-
     " if !has('gui')
         "set term=$TERM          " Make arrow and other keys work
     " endif
+
+    let NERDTreeShowHidden=1 " show hidden files
     filetype plugin indent on   " Automatically detect file types.
-    "syntax on                   " Syntax highlighting
+    set nobackup       " no backup files
+    set nowritebackup  " only in case you don't want a backup file while editing
     set mouse=a                 " Automatically enable mouse usage
     set mousehide               " Hide the mouse cursor while typing
     set encoding=utf8
@@ -88,39 +75,18 @@
 
     " Most prefer to automatically switch to the current file directory when
     " a new buffer is opened; to prevent this behavior, add the following to
-    " your .vimrc.before.local file:
     "   let g:spf13_no_autochdir = 1
     if !exists('g:spf13_no_autochdir')
         autocmd BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
         " Always switch to the current file directory
     endif
 
-    "set autowrite                       " Automatically write a file when leaving a modified buffer
     set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
     set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
     set virtualedit=onemore             " Allow for cursor beyond last character
     set history=1000                    " Store a ton of history (default is 20)
     set spell                           " Spell checking on
     set hidden                          " Allow buffer switching without saving
-
-    " buffer快速导航
-    nnoremap <Leader>b :bp<CR>
-    nnoremap <Leader>f :bn<CR>
-
-    " 查看buffers
-    nnoremap <Leader>l :ls<CR>
-
-    " 通过索引快速跳转
-    nnoremap <Leader>b1 :1b<CR>
-    nnoremap <Leader>b2 :2b<CR>
-    nnoremap <Leader>3 :3b<CR>
-    nnoremap <Leader>4 :4b<CR>
-    nnoremap <Leader>5 :5b<CR>
-    nnoremap <Leader>6 :6b<CR>
-    nnoremap <Leader>7 :7b<CR>
-    nnoremap <Leader>8 :8b<CR>
-    nnoremap <Leader>9 :9b<CR>
-    nnoremap <Leader>0 :10b<CR>
 
     set iskeyword-=.                    " '.' is an end of word designator
     set iskeyword-=#                    " '#' is an end of word designator
@@ -148,32 +114,16 @@
         augroup END
     endif
 
-    " Setting up the directories {
-        if has('persistent_undo')
-            set undofile                " So is persistent undo ...
-            set undolevels=1000         " Maximum number of changes that can be undone
-            set undoreload=10000        " Maximum number lines to save for undo on a buffer reload
-        endif
-
-        " To disable views add the following to your .vimrc.before.local file:
-        "   let g:spf13_no_views = 1
-        if !exists('g:spf13_no_views')
-            " Add exclusions to mkview and loadview
-            " eg: *.*, svn-commit.tmp
-            let g:skipview_files = [
-                \ '\[example pattern\]'
-                \ ]
-        endif
     " }
 
 " }
 
 " Vim UI {
 
-    " set signcolumn=no
+    " set signcolumn=no             " Remove SignColumn
+    " highlight clear CursorLineNr  " Remove highlight color from current line number
     highlight clear SignColumn      " SignColumn should match background
     highlight clear LineNr          " Current line number row will have same background color in relative mode
-    "highlight clear CursorLineNr    " Remove highlight color from current line number
 
     if has('cmdline_info')
         set ruler                   " Show the ruler
@@ -256,28 +206,43 @@
 " Key (re)Mappings {
 
     " The default leader is ' '
-    if !exists('g:wanglk_leader')
-        let mapleader = ' '
-    else
-        let mapleader=g:wanglk_leader
-    endif
-    if !exists('g:wanglk_localleader')
-        let maplocalleader = '_'
-    else
-        let maplocalleader=g:wanglk_localleader
-    endif
+    let mapleader = ' '
+    let maplocalleader = '_'
 
     " The default mappings for editing and applying the configuration
-    if !exists('g:wanglk_edit_config_mapping')
-        let s:wanglk_edit_config_mapping = '<leader>ev'
-    else
-        let s:wanglk_edit_config_mapping = g:wanglk_edit_config_mapping
-    endif
-    if !exists('g:wanglk_apply_config_mapping')
-        let s:wanglk_apply_config_mapping = '<leader>sv'
-    else
-        let s:wanglk_apply_config_mapping = g:wanglk_apply_config_mapping
-    endif
+    let s:wanglk_edit_config_mapping = '<leader>ev'
+    let s:wanglk_apply_config_mapping = '<leader>sv'
+
+    " buffer快速导航
+    nnoremap <Leader>b :bp<CR>
+    nnoremap <Leader>f :bn<CR>
+
+    " 查看buffers
+    nnoremap <Leader>bl :ls<CR>
+
+    " 通过索引快速跳转
+    nnoremap <Leader>b1 :1b<CR>
+    nnoremap <Leader>b2 :2b<CR>
+    nnoremap <Leader>b3 :3b<CR>
+    nnoremap <Leader>b4 :4b<CR>
+    nnoremap <Leader>b5 :5b<CR>
+    nnoremap <Leader>b6 :6b<CR>
+    nnoremap <Leader>b7 :7b<CR>
+    nnoremap <Leader>b8 :8b<CR>
+    nnoremap <Leader>b9 :9b<CR>
+    nnoremap <Leader>b0 :10b<CR>
+
+    " Allow to trigger background
+    function! ToggleBG()
+        let s:tbg = &background
+        " Inversion
+        if s:tbg == "dark"
+            set background=light
+        else
+            set background=dark
+        endif
+    endfunction
+    noremap <leader>bg :call ToggleBG()<CR>
 
     " Easier moving in tabs and windows
     " The lines conflict with the default digraph mapping of <C-K>
@@ -468,6 +433,7 @@
     Plug 'easymotion/vim-easymotion'
     Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
     Plug 'bling/vim-bufferline'
+    Plug 'ashisha/image.vim'
 
     call plug#end()
 
@@ -483,7 +449,6 @@
     colorscheme gruvbox
     let g:NERDSpaceDelims=1
     "let g:airline_statusline_ontop=1
-    "let g:airline#extensions#tabline#enabled = 1
 
     " GVIM- (here instead of .gvimrc)
     if has('gui_running')
@@ -508,60 +473,6 @@
 " }
 
 " Functions {
-
-    " Initialize directories {
-    function! InitializeDirectories()
-        let parent = $HOME
-        let prefix = 'vim'
-        let dir_list = {
-                    \ 'backup': 'backupdir',
-                    \ 'views': 'viewdir',
-                    \ 'swap': 'directory' }
-
-        if has('persistent_undo')
-            let dir_list['undo'] = 'undodir'
-        endif
-
-        " To specify a different directory in which to place the vimbackup,
-        " vimviews, vimundo, and vimswap files/directories, add the following to
-        " your .vimrc.before.local file:
-        "   let g:spf13_consolidated_directory = <full path to desired directory>
-        "   eg: let g:spf13_consolidated_directory = $HOME . '/.vim/'
-        if exists('g:spf13_consolidated_directory')
-            let common_dir = g:spf13_consolidated_directory . prefix
-        else
-            let common_dir = parent . '/.' . prefix
-        endif
-
-        for [dirname, settingname] in items(dir_list)
-            let directory = common_dir . dirname . '/'
-            if exists("*mkdir")
-                if !isdirectory(directory)
-                    call mkdir(directory)
-                endif
-            endif
-            if !isdirectory(directory)
-                echo "Warning: Unable to create backup directory: " . directory
-                echo "Try: mkdir -p " . directory
-            else
-                let directory = substitute(directory, " ", "\\\\ ", "g")
-                exec "set " . settingname . "=" . directory
-            endif
-        endfor
-    endfunction
-    " Initialize NERDTree as needed {
-    function! NERDTreeInitAsNeeded()
-        redir => bufoutput
-        buffers!
-        redir END
-        let idx = stridx(bufoutput, "NERD_tree")
-        if idx > -1
-            NERDTreeMirror
-            NERDTreeFind
-            wincmd l
-        endif
-    endfunction
-    " }
 
     " Strip whitespace {
     function! StripTrailingWhitespace()
@@ -610,6 +521,7 @@
 
     execute "noremap " . s:wanglk_edit_config_mapping " :call <SID>EditWanglkConfig()<CR>"
     execute "noremap " . s:wanglk_apply_config_mapping . " :source ~/.vimrc<CR>"
+
 " }
 
 " Use local gvimrc if available and gui is running {
