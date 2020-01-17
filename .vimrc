@@ -68,6 +68,7 @@
     Plug 'easymotion/vim-easymotion'
     Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
     Plug 'bling/vim-bufferline'
+    Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 
     call plug#end()
 
@@ -81,6 +82,8 @@
     " if !has('gui')
         "set term=$TERM          " Make arrow and other keys work
     " endif
+
+    nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 
     let NERDTreeShowHidden=1 " show hidden files
     filetype plugin indent on   " Automatically detect file types.
@@ -234,22 +237,18 @@
 
 " Key (re)Mappings {
 
-    " The default leader is ' '
+    " leader key
     let mapleader = ' '
     let maplocalleader = '_'
 
-    " The default mappings for editing and applying the configuration
+    " editing and applying the configuration
     let s:wanglk_edit_config_mapping = '<leader>ev'
     let s:wanglk_apply_config_mapping = '<leader>sv'
 
-    " buffer快速导航
+    " buffer
     nnoremap <Leader>b :bp<CR>
     nnoremap <Leader>f :bn<CR>
-
-    " 查看buffers
     nnoremap <Leader>bl :ls<CR>
-
-    " 通过索引快速跳转
     nnoremap <Leader>b1 :1b<CR>
     nnoremap <Leader>b2 :2b<CR>
     nnoremap <Leader>b3 :3b<CR>
@@ -261,7 +260,7 @@
     nnoremap <Leader>b9 :9b<CR>
     nnoremap <Leader>b0 :10b<CR>
 
-    " Allow to trigger background
+    " trigger background
     function! ToggleBG()
         let s:tbg = &background
         " Inversion
@@ -273,9 +272,7 @@
     endfunction
     noremap <leader>bg :call ToggleBG()<CR>
 
-    " Easier moving in tabs and windows
-    " The lines conflict with the default digraph mapping of <C-K>
-    " let g:wanglk_no_easyWindows = 1
+    " moving in tabs and windows
     if !exists('g:wanglk_no_easyWindows')
         map <C-J> <C-W>j<C-W>_
         map <C-K> <C-W>k<C-W>_
@@ -283,15 +280,13 @@
         map <C-H> <C-W>h<C-W>_
     endif
 
-    " Wrapped lines goes down/up to next row, rather than next line in file.
+    " down/up to next row
     noremap j gj
     noremap k gk
 
     " End/Start of line motion keys act relative to row/wrap width in the
     " presence of `:set wrap`, and relative to line for `:set nowrap`.
     " Default vim behaviour is to act relative to text line in both cases
-    " If you prefer the default behaviour, add the following to your, default `on`
-    " let g:wanglk_no_wrapRelMotion = 1
     if !exists('g:wanglk_no_wrapRelMotion')
         " Same for 0, home, end, etc
         function! WrapRelativeMotion(key, ...)
@@ -325,13 +320,8 @@
         vnoremap ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
     endif
 
-    " The following two lines conflict with moving to top and bottom of the screen
-    " If you prefer that functionality, add the following to your, default `on`
-    " let g:wanglk_no_fastTabs = 1
-    if !exists('g:wanglk_no_fastTabs')
-        map <S-H> gT
-        map <S-L> gt
-    endif
+    nnoremap Y y$
+    nmap <silent> <leader>/ :set invhlsearch<CR>
 
     " Stupid shift key fixes
     if !exists('g:wanglk_no_keyfixes')
@@ -348,29 +338,6 @@
         endif
 
         cmap Tabe tabe
-    endif
-
-    " Yank from the cursor to the end of the line, to be consistent with C and D.
-    nnoremap Y y$
-
-    " Code folding options
-    nmap <leader>f0 :set foldlevel=0<CR>
-    nmap <leader>f1 :set foldlevel=1<CR>
-    nmap <leader>f2 :set foldlevel=2<CR>
-    nmap <leader>f3 :set foldlevel=3<CR>
-    nmap <leader>f4 :set foldlevel=4<CR>
-    nmap <leader>f5 :set foldlevel=5<CR>
-    nmap <leader>f6 :set foldlevel=6<CR>
-    nmap <leader>f7 :set foldlevel=7<CR>
-    nmap <leader>f8 :set foldlevel=8<CR>
-    nmap <leader>f9 :set foldlevel=9<CR>
-
-    " 1 is To clear search highlighting, 0 is toggle it on and off, default `0`
-    " let g:wanglk_clear_search_highlight = 1
-    if exists('g:wanglk_clear_search_highlight')
-        nmap <silent> <leader>/ :nohlsearch<CR0
-    else
-        nmap <silent> <leader>/ :set invhlsearch<CR>
     endif
 
     " Shortcuts
