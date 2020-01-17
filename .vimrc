@@ -45,9 +45,36 @@
 
 " }
 
+" Plugins {
+
+    if empty(glob('~/.vim/autoload/plug.vim'))
+        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+            \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    endif
+
+    call plug#begin('~/.vim/plugged')
+
+    Plug 'altercation/vim-colors-solarized'
+    Plug 'scrooloose/nerdtree'
+    Plug 'ryanoasis/vim-devicons'
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'tpope/vim-surround'
+    Plug 'scrooloose/nerdcommenter'
+    Plug 'mattn/emmet-vim' " 补全
+    Plug 'raimondi/delimitMate' " 补全符号
+    Plug 'morhetz/gruvbox'
+    Plug 'vim-airline/vim-airline'
+    Plug 'easymotion/vim-easymotion'
+    Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+    Plug 'bling/vim-bufferline'
+
+    call plug#end()
+
+" }
+
 " General {
 
-    " syntax on                   " Syntax highlighting
     " set autowrite                       " Automatically write a file when leaving a modified buffer
     " set noswapfile     " no swap files
     " set noundofile
@@ -114,16 +141,17 @@
         augroup END
     endif
 
-    " }
-
 " }
 
 " Vim UI {
 
-    " set signcolumn=no             " Remove SignColumn
-    " highlight clear CursorLineNr  " Remove highlight color from current line number
+    syntax enable
+    set background=dark         " Assume a dark background
+    let g:solarized_visibility = "high"
+    let g:solarized_contrast = "high"
+    let g:solarized_termcolors=256
+    colorscheme gruvbox
     highlight clear SignColumn      " SignColumn should match background
-    highlight clear LineNr          " Current line number row will have same background color in relative mode
 
     if has('cmdline_info')
         set ruler                   " Show the ruler
@@ -164,6 +192,7 @@
     set scrolloff=3                 " Minimum lines to keep above and below cursor
     set sidescrolloff=15
     set foldenable                  " Auto fold code
+    set foldmethod=marker
     set list
     set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
 
@@ -344,10 +373,6 @@
         nmap <silent> <leader>/ :set invhlsearch<CR>
     endif
 
-
-    " Find merge conflict markers
-    map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
-
     " Shortcuts
     " Change Working Directory to that of the current file
     cmap cwd lcd %:p:h
@@ -371,6 +396,9 @@
     map <leader>es :sp %%
     map <leader>ev :vsp %%
     map <leader>et :tabe %%
+
+    " Find merge conflict markers
+    map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
 
     " Adjust viewports to the same size
     map <Leader>= <C-w>=
@@ -410,43 +438,8 @@
 
 " }
 
-" Plugins {
-
-    if empty(glob('~/.vim/autoload/plug.vim'))
-        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-            \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-    endif
-
-    call plug#begin('~/.vim/plugged')
-
-    Plug 'altercation/vim-colors-solarized'
-    Plug 'scrooloose/nerdtree'
-    Plug 'ryanoasis/vim-devicons'
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
-    Plug 'tpope/vim-surround'
-    Plug 'scrooloose/nerdcommenter'
-    Plug 'mattn/emmet-vim' " 补全
-    Plug 'raimondi/delimitMate' " 补全符号
-    Plug 'morhetz/gruvbox'
-    Plug 'vim-airline/vim-airline'
-    Plug 'easymotion/vim-easymotion'
-    Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
-    Plug 'bling/vim-bufferline'
-    Plug 'ashisha/image.vim'
-
-    call plug#end()
-
-" }
-
 " GUI Settings {
 
-    syntax enable
-    set background=dark         " Assume a dark background
-    let g:solarized_visibility = "high"
-    let g:solarized_contrast = "high"
-    let g:solarized_termcolors=256
-    colorscheme gruvbox
     let g:NERDSpaceDelims=1
     "let g:airline_statusline_ontop=1
 
