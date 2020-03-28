@@ -52,38 +52,26 @@
   Plug 'morhetz/gruvbox'
   Plug 'vim-airline/vim-airline'
   Plug 'easymotion/vim-easymotion'
-  Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
   Plug 'bling/vim-bufferline'
   Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
   call plug#end()
 
+  let NERDTreeShowHidden=1                   " show hidden files
+  let g:NERDSpaceDelims=1                    " nerdcommenter
+  " let g:airline_statusline_ontop=1           " vim-airline
+  " let g:user_emmet_expandabbr_key='<Tab>'    " emmet key
+  " imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+  nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+
 " ==========
 " General
 " ==========
-  " set autowrite
-  " set noswapfile     " no swap files
-  " set noundofile
-  nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
-  let NERDTreeShowHidden=1 " show hidden files
-  filetype plugin indent on   " Automatically detect file types.
-  set nobackup       " no backup files
-  set nowritebackup  " only in case you don't want a backup file while editing
-  set mouse=a                 " Automatically enable mouse usage
-  set mousehide               " Hide the mouse cursor while typing
-  set encoding=utf8
-  scriptencoding utf-8
-  set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1 " macvim
-  if has('clipboard')
-      if has('unnamedplus')  " When possible use + register for copy-paste
-          set clipboard=unnamed,unnamedplus
-      else         " On mac and Windows, use * register for copy-paste
-          set clipboard=unnamed
-      endif
-  endif
-  if !exists('g:spf13_no_autochdir')
-      autocmd BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
-      " Always switch to the current file directory
-  endif
+  set noswapfile                      " no swap files
+  set noundofile                      " no undo files
+  set nobackup                        " no backup files
+  set nowritebackup                   " only in case you don't want a backup file while editing
+  set mouse=a                         " Automatically enable mouse usage
+  set mousehide                       " Hide the mouse cursor while typing
   set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
   set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
   set virtualedit=onemore             " Allow for cursor beyond last character
@@ -93,35 +81,16 @@
   set iskeyword-=.                    " '.' is an end of word designator
   set iskeyword-=#                    " '#' is an end of word designator
   set iskeyword-=-                    " '-' is an end of word designator
-  " Instead of reverting the cursor to the last position in the buffer, we
-  " set it to the first line when editing a git commit message
-  au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
-
-  " http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
-  " Restore cursor to file position in previous editing session
-  " To disable this, add the following to your .vimrc.before.local file:
-  "   let g:spf13_no_restore_cursor = 1
-  if !exists('g:spf13_no_restore_cursor')
-      function! ResCur()
-          if line("'\"") <= line("$")
-              silent! normal! g`"
-              return 1
-          endif
-      endfunction
-
-      augroup resCur
-          autocmd!
-          autocmd BufWinEnter * call ResCur()
-      augroup END
-  endif
+  set encoding=utf8
+  scriptencoding utf-8
+  filetype plugin indent on   " Automatically detect file types.
 
 " ==========
 " Vim UI
 " ==========
   set termguicolors
   syntax enable
-  " set background=dark
-  " let g:solarized_termcolors=256
+  set background=dark
   colorscheme gruvbox
   " colorscheme solarized
   highlight clear SignColumn
@@ -160,7 +129,7 @@
 " ==========
   set nowrap                      " Do not wrap long lines
   set autoindent                  " Indent at the same level of the previous line
-  set shiftwidth=2                " Use indents of 4 spaces
+  set shiftwidth=2                " Use indents of 2 spaces
   set expandtab                   " Tabs are spaces, not tabs
   set tabstop=2                   " An indentation every four columns
   set softtabstop=2               " Let backspace delete indent
@@ -168,16 +137,11 @@
   set splitright                  " Puts new vsplit windows to the right of the current
   set splitbelow                  " Puts new split windows to the bottom of the current
   set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
-  "set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
-  autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:spf13_keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
-  autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
-  autocmd FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
-  autocmd BufNewFile,BufRead *.coffee set filetype=coffee
+  set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
   autocmd BufNewFile,BufRead *.ts set filetype=typescript
   autocmd BufNewFile,BufRead *.tsx set filetype=typescript
-  autocmd FileType haskell setlocal commentstring=--\ %s
-  autocmd FileType html,css,javascript,typescript,json,typescriptreact setlocal tabstop=2 shiftwidth=2 softtabstop=2
-  autocmd FileType haskell,rust,typescript,javascript setlocal nospell
+  " autocmd FileType html,css,javascript,javascriptreact,typescript,json,typescriptreact setlocal tabstop=2 shiftwidth=2 softtabstop=2
+  " autocmd FileType haskell,rust,typescript,javascript setlocal nospell
 
 " ==========
 " Key(re) Mappings
@@ -186,8 +150,10 @@
   let maplocalleader = '_'
   let s:edit_config_mapping = '<leader>ev'
   let s:apply_config_mapping = '<leader>sv'
+
   noremap j gj
   noremap k gk
+  noremap <leader>bg :call ToggleBG()<CR>
   nnoremap <Leader>b :bp<CR>
   nnoremap <Leader>f :bn<CR>
   nnoremap <Leader>bl :ls<CR>
@@ -201,59 +167,16 @@
   nnoremap <Leader>b8 :8b<CR>
   nnoremap <Leader>b9 :9b<CR>
   nnoremap <Leader>b0 :10b<CR>
-  " trigger background
-  function! ToggleBG()
-      let s:tbg = &background
-      " Inversion
-      if s:tbg == "dark"
-          set background=light
-      else
-          set background=dark
-      endif
-  endfunction
-  noremap <leader>bg :call ToggleBG()<CR>
+  nnoremap Y y$
+  nmap <silent> <leader>/ :set invhlsearch<CR>
+
   if !exists('g:wanglk_no_easyWindows')
       map <C-J> <C-W>j<C-W>_
       map <C-K> <C-W>k<C-W>_
       map <C-L> <C-W>l<C-W>_
       map <C-H> <C-W>h<C-W>_
   endif
-  if !exists('g:wanglk_no_wrapRelMotion')
-      " Same for 0, home, end, etc
-      function! WrapRelativeMotion(key, ...)
-          let vis_sel=""
-          if a:0
-              let vis_sel="gv"
-          endif
-          if &wrap
-              execute "normal!" vis_sel . "g" . a:key
-          else
-              execute "normal!" vis_sel . a:key
-          endif
-      endfunction
 
-      " normal
-      noremap $ :call WrapRelativeMotion("$")<CR>
-      noremap <End> :call WrapRelativeMotion("$")<CR>
-      noremap 0 :call WrapRelativeMotion("0")<CR>
-      noremap <Home> :call WrapRelativeMotion("0")<CR>
-      noremap ^ :call WrapRelativeMotion("^")<CR>
-      " Overwrite the operator pending $/<End> mappings from above
-      " to force inclusive motion with :execute normal!
-      onoremap $ v:call WrapRelativeMotion("$")<CR>
-      onoremap <End> v:call WrapRelativeMotion("$")<CR>
-      " visual+select
-      vnoremap $ :<C-U>call WrapRelativeMotion("$", 1)<CR>
-      vnoremap <End> :<C-U>call WrapRelativeMotion("$", 1)<CR>
-      vnoremap 0 :<C-U>call WrapRelativeMotion("0", 1)<CR>
-      vnoremap <Home> :<C-U>call WrapRelativeMotion("0", 1)<CR>
-      vnoremap ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
-  endif
-
-  nnoremap Y y$
-  nmap <silent> <leader>/ :set invhlsearch<CR>
-
-  " Shortcuts
   " Change Working Directory to that of the current file
   cmap cwd lcd %:p:h
   cmap cd. lcd %:p:h
@@ -265,19 +188,13 @@
   " http://stackoverflow.com/a/8064607/127816
   vnoremap . :normal .<CR>
 
-  " For when you forget to sudo.. Really Write the file.
-  cmap w!! w !sudo tee % >/dev/null
-
   " Some helpers to edit mode
   " http://vimcasts.org/e/14
   cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
   map <leader>ew :e %%
   map <leader>es :sp %%
-  map <leader>ev :vsp %%
+  map <leader>ep :vsp %%
   map <leader>et :tabe %%
-
-  " Find merge conflict markers
-  " map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
 
   " Adjust viewports to the same size
   map <Leader>= <C-w>=
@@ -287,12 +204,7 @@
   " Easier horizontal scrolling
   map zl zL
   map zh zH
-  " Easier formatting
-  nnoremap <silent> <leader>q gwip
 
-  " FIXME: Revert this f70be548
-  " fullscreen mode for GVIM and Terminal, need 'wmctrl' in you PATH
-  map <silent> <F11> :call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")<CR>
   map <C-e> :NERDTreeToggle<CR>
   let NERDTreeQuitOnOpen=0
   autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -307,28 +219,24 @@
   "   \ coc#refresh()
   " inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-  function! s:check_back_space() abort
-      let col = col('.') - 1
-      return !col || getline('.')[col - 1]  =~# '\s'
-  endfunction
+  " function! s:check_back_space() abort
+  "     let col = col('.') - 1
+  "     return !col || getline('.')[col - 1]  =~# '\s'
+  " endfunction
 
 " ==========
 " GUI Settings
 " ==========
-  let g:NERDSpaceDelims=1
-  "let g:airline_statusline_ontop=1
   " GVIM- (here instead of .gvimrc)
   if has('gui_running')
       set guioptions-=T           " Remove the toolbar
       set lines=40                " 40 lines of text instead of 24
-      if !exists("g:spf13_no_big_font")
-          if LINUX() && has("gui_running")
-              set guifont=Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
-          elseif OSX() && has("gui_running")
-              set guifont=HackNerdFontComplete-Regular:h14,Menlo\ Regular:h14,Consolas\ Regular:h14,Courier\ New\ Regular:h14
-          elseif WINDOWS() && has("gui_running")
-              set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h10,Courier_New:h10
-          endif
+      if LINUX() && has("gui_running")
+          set guifont=Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
+      elseif OSX() && has("gui_running")
+          set guifont=HackNerdFontComplete-Regular:h14,Menlo\ Regular:h14,Consolas\ Regular:h14,Courier\ New\ Regular:h14
+      elseif WINDOWS() && has("gui_running")
+          set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h10,Courier_New:h10
       endif
   else
       if &term == 'xterm' || &term == 'screen'
@@ -340,48 +248,24 @@
 " ==========
 " Functions
 " ==========
-  " Strip whitespace {
-  function! StripTrailingWhitespace()
-      " Preparation: save last search, and cursor position.
-      let _s=@/
-      let l = line(".")
-      let c = col(".")
-      " do the business:
-      %s/\s\+$//e
-      " clean up: restore previous search history, and cursor position
-      let @/=_s
-      call cursor(l, c)
+  " trigger background
+  function! ToggleBG()
+      let s:tbg = &background
+      " Inversion
+      if s:tbg == "dark"
+          set background=light
+      else
+          set background=dark
+      endif
   endfunction
-
-  " Shell command {
-  function! s:RunShellCommand(cmdline)
-      botright new
-      setlocal buftype=nofile
-      setlocal bufhidden=delete
-      setlocal nobuflisted
-      setlocal noswapfile
-      setlocal nowrap
-      setlocal filetype=shell
-      setlocal syntax=shell
-
-      call setline(1, a:cmdline)
-      call setline(2, substitute(a:cmdline, '.', '=', 'g'))
-      execute 'silent $read !' . escape(a:cmdline, '%#')
-      setlocal nomodifiable
-      1
-  endfunction
-
-  command! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
-  " e.g. Grep current file for <search_term>: Shell grep -Hn <search_term> %
-  " }
 
   function! s:ExpandFilenameAndExecute(command, file)
       execute a:command . " " . expand(a:file, ":p")
   endfunction
 
-  function! s:EditWanglkConfig()
+  function! s:EditVimrcConfig()
       call <SID>ExpandFilenameAndExecute("tabedit", "~/.vimrc")
   endfunction
 
-  execute "noremap " . s:edit_config_mapping " :call <SID>EditWanglkConfig()<CR>"
+  execute "noremap " . s:edit_config_mapping " :call <SID>EditVimrcConfig()<CR>"
   execute "noremap " . s:apply_config_mapping . " :source ~/.vimrc<CR>"
