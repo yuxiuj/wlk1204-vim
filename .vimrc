@@ -70,6 +70,7 @@
   Plug 'easymotion/vim-easymotion'
   Plug 'bling/vim-bufferline'
   Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+  Plug 'ctrlpvim/ctrlp.vim'
   call plug#end()
 
 " ==========
@@ -170,19 +171,12 @@
   noremap k gk
   nnoremap Y y$
   noremap <leader>bg :call ToggleBG()<CR>
-  nnoremap <Leader>b :bp<CR>
-  nnoremap <Leader>f :bn<CR>
   nnoremap <Leader>bl :ls<CR>
-  nnoremap <Leader>b1 :1b<CR>
-  nnoremap <Leader>b2 :2b<CR>
-  nnoremap <Leader>b3 :3b<CR>
-  nnoremap <Leader>b4 :4b<CR>
-  nnoremap <Leader>b5 :5b<CR>
-  nnoremap <Leader>b6 :6b<CR>
-  nnoremap <Leader>b7 :7b<CR>
-  nnoremap <Leader>b8 :8b<CR>
-  nnoremap <Leader>b9 :9b<CR>
-  nnoremap <Leader>b0 :10b<CR>
+  nnoremap <Leader>bp :bp<CR>
+  nnoremap <Leader>bn :bn<CR>
+  for i in range(1, 20)
+    execute "nnoremap \<Leader>b" . i . " :" . i . "b<CR>"
+  endfor
   map <C-J> <C-W>j<C-W>_
   map <C-K> <C-W>k<C-W>_
   map <C-L> <C-W>l<C-W>_
@@ -202,7 +196,6 @@
   nmap <silent> <leader>/ :set invhlsearch<CR>
 " Map <Leader>ff to display all lines with keyword under cursor and ask which one to jump to
   nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
-  " Visual shifting
   vnoremap < <gv
   vnoremap > >gv
   " repeat operator http://stackoverflow.com/a/8064607/127816
@@ -211,31 +204,22 @@
 " ==========
 " Plugin Settings
 " ==========
-  " nerdtree
+  let g:ctrlp_map = '<leader>p'
+  let g:NERDSpaceDelims=1
   let NERDTreeShowHidden=1                   " show hidden files
   let NERDTreeQuitOnOpen=0
-  map <C-e> :NERDTreeToggle<CR>
-  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
   map <leader>1 <C-h>
   map <leader>2 <C-l>
-
-  " nerdcommenter
-  let g:NERDSpaceDelims=1
-
-  " whichkey
+  map <leader>e :NERDTreeToggle<CR>
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
   nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
-
   " coc.vim use tab key for trigger completion
   inoremap <silent><expr> <TAB>
     \ pumvisible() ? "\<C-n>" :
     \ <SID>check_back_space() ? "\<TAB>" :
     \ coc#refresh()
   inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
-
-  " vim-airline
   " let g:airline_statusline_ontop=1
-
-  " emmet
   " let g:user_emmet_expandabbr_key='<Tab>'
   " imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
 
