@@ -17,18 +17,34 @@
   endfunction
 
 " ==========
-" Basics
+" Windows Compatible
 " ==========
   set nocompatible  " Must be first line
   if !WINDOWS()
       set shell=/bin/sh
   endif
-
-" ==========
-" Windows Compatible
-" ==========
   if WINDOWS()
     set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
+  endif
+
+" ==========
+" GUI Settings
+" ==========
+  " GVIM- (here instead of .gvimrc)
+  if has('gui_running')
+      set guioptions-=T           " Remove the toolbar
+      set lines=40                " 40 lines of text instead of 24
+      if LINUX() && has("gui_running")
+          set guifont=Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
+      elseif OSX() && has("gui_running")
+          set guifont=HackNerdFontComplete-Regular:h14,Menlo\ Regular:h14,Consolas\ Regular:h14,Courier\ New\ Regular:h14
+      elseif WINDOWS() && has("gui_running")
+          set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h10,Courier_New:h10
+      endif
+  else
+      if &term == 'xterm' || &term == 'screen'
+          set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
+      endif
   endif
 
 " ==========
@@ -56,13 +72,6 @@
   Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
   call plug#end()
 
-  let NERDTreeShowHidden=1                   " show hidden files
-  let g:NERDSpaceDelims=1                    " nerdcommenter
-  " let g:airline_statusline_ontop=1           " vim-airline
-  " let g:user_emmet_expandabbr_key='<Tab>'    " emmet key
-  " imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
-  nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
-
 " ==========
 " General
 " ==========
@@ -81,18 +90,44 @@
   set iskeyword-=.                    " '.' is an end of word designator
   set iskeyword-=#                    " '#' is an end of word designator
   set iskeyword-=-                    " '-' is an end of word designator
+  if has('clipboard')
+      if has('unnamedplus')           " When possible use + register for copy-paste
+          set clipboard=unnamed,unnamedplus
+      else                            " On mac and Windows, use * register for copy-paste
+          set clipboard=unnamed
+      endif
+  endif
+
+" ==========
+" Formatting
+" ==========
   set encoding=utf8
-  scriptencoding utf-8
-  filetype plugin indent on   " Automatically detect file types.
+  set nowrap                          " Do not wrap long lines
+  set autoindent                      " Indent at the same level of the previous line
+  set shiftwidth=2                    " Use indents of 2 spaces
+  set expandtab                       " Tabs are spaces, not tabs
+  set tabstop=2                       " An indentation every four columns
+  set softtabstop=2                   " Let backspace delete indent
+  set nojoinspaces                    " Prevents inserting two spaces after punctuation on a join (J)
+  set splitright                      " Puts new vsplit windows to the right of the current
+  set splitbelow                      " Puts new split windows to the bottom of the current
+  set pastetoggle=<F12>               " pastetoggle (sane indentation on pastes)
+  set comments=sl:/*,mb:*,elx:*/      " auto format comment blocks
+  filetype plugin indent on           " Automatically detect file types.
+  autocmd BufNewFile,BufRead *.ts set filetype=typescript
+  autocmd BufNewFile,BufRead *.tsx set filetype=typescript
+  " scriptencoding utf-8
+  " autocmd FileType html,css,javascript,javascriptreact,typescript,json,typescriptreact setlocal tabstop=2 shiftwidth=2 softtabstop=2
+  " autocmd FileType haskell,rust,typescript,javascript setlocal nospell
 
 " ==========
 " Vim UI
 " ==========
-  set termguicolors
   syntax enable
   set background=dark
+  " solarized gruvbox
   colorscheme gruvbox
-  " colorscheme solarized
+  set termguicolors
   highlight clear SignColumn
   highlight CocErrorHighlight ctermfg=Red  guifg=#ff0000
   if has('cmdline_info')
@@ -125,34 +160,15 @@
   set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
 
 " ==========
-" Formatting
-" ==========
-  set nowrap                      " Do not wrap long lines
-  set autoindent                  " Indent at the same level of the previous line
-  set shiftwidth=2                " Use indents of 2 spaces
-  set expandtab                   " Tabs are spaces, not tabs
-  set tabstop=2                   " An indentation every four columns
-  set softtabstop=2               " Let backspace delete indent
-  set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
-  set splitright                  " Puts new vsplit windows to the right of the current
-  set splitbelow                  " Puts new split windows to the bottom of the current
-  set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
-  set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
-  autocmd BufNewFile,BufRead *.ts set filetype=typescript
-  autocmd BufNewFile,BufRead *.tsx set filetype=typescript
-  " autocmd FileType html,css,javascript,javascriptreact,typescript,json,typescriptreact setlocal tabstop=2 shiftwidth=2 softtabstop=2
-  " autocmd FileType haskell,rust,typescript,javascript setlocal nospell
-
-" ==========
 " Key(re) Mappings
 " ==========
   let mapleader = ' '
   let maplocalleader = '_'
   let s:edit_config_mapping = '<leader>ev'
   let s:apply_config_mapping = '<leader>sv'
-
   noremap j gj
   noremap k gk
+  nnoremap Y y$
   noremap <leader>bg :call ToggleBG()<CR>
   nnoremap <Leader>b :bp<CR>
   nnoremap <Leader>f :bn<CR>
@@ -167,83 +183,61 @@
   nnoremap <Leader>b8 :8b<CR>
   nnoremap <Leader>b9 :9b<CR>
   nnoremap <Leader>b0 :10b<CR>
-  nnoremap Y y$
-  nmap <silent> <leader>/ :set invhlsearch<CR>
-
-  if !exists('g:wanglk_no_easyWindows')
-      map <C-J> <C-W>j<C-W>_
-      map <C-K> <C-W>k<C-W>_
-      map <C-L> <C-W>l<C-W>_
-      map <C-H> <C-W>h<C-W>_
-  endif
-
-  " Change Working Directory to that of the current file
-  cmap cwd lcd %:p:h
-  cmap cd. lcd %:p:h
-
-  " Visual shifting (does not exit Visual mode)
-  vnoremap < <gv
-  vnoremap > >gv
-  " repeat operator
-  " http://stackoverflow.com/a/8064607/127816
-  vnoremap . :normal .<CR>
-
-  " Some helpers to edit mode
-  " http://vimcasts.org/e/14
-  cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
+  map <C-J> <C-W>j<C-W>_
+  map <C-K> <C-W>k<C-W>_
+  map <C-L> <C-W>l<C-W>_
+  map <C-H> <C-W>h<C-W>_
   map <leader>ew :e %%
   map <leader>es :sp %%
   map <leader>ep :vsp %%
   map <leader>et :tabe %%
-
   " Adjust viewports to the same size
   map <Leader>= <C-w>=
-  " Map <Leader>ff to display all lines with keyword under cursor
-  " and ask which one to jump to
-  nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
   " Easier horizontal scrolling
   map zl zL
   map zh zH
+  " Change Working Directory to that of the current file
+  cmap cwd lcd %:p:h
+  cmap cd. lcd %:p:h
+  nmap <silent> <leader>/ :set invhlsearch<CR>
+" Map <Leader>ff to display all lines with keyword under cursor and ask which one to jump to
+  nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
+  " Visual shifting
+  vnoremap < <gv
+  vnoremap > >gv
+  " repeat operator http://stackoverflow.com/a/8064607/127816
+  vnoremap . :normal .<CR>
 
-  map <C-e> :NERDTreeToggle<CR>
+" ==========
+" Plugin Settings
+" ==========
+  " nerdtree
+  let NERDTreeShowHidden=1                   " show hidden files
   let NERDTreeQuitOnOpen=0
+  map <C-e> :NERDTreeToggle<CR>
   autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
   map <leader>1 <C-h>
   map <leader>2 <C-l>
 
-  "" coc.vim
-  " :verbose imap <tab>
-  " inoremap <silent><expr> <TAB>
-  "   \ pumvisible() ? "\<C-n>" :
-  "   \ <SID>check_back_space() ? "\<TAB>" :
-  "   \ coc#refresh()
-  " inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+  " nerdcommenter
+  let g:NERDSpaceDelims=1
 
-  " function! s:check_back_space() abort
-  "     let col = col('.') - 1
-  "     return !col || getline('.')[col - 1]  =~# '\s'
-  " endfunction
+  " whichkey
+  nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 
-" ==========
-" GUI Settings
-" ==========
-  " GVIM- (here instead of .gvimrc)
-  if has('gui_running')
-      set guioptions-=T           " Remove the toolbar
-      set lines=40                " 40 lines of text instead of 24
-      if LINUX() && has("gui_running")
-          set guifont=Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
-      elseif OSX() && has("gui_running")
-          set guifont=HackNerdFontComplete-Regular:h14,Menlo\ Regular:h14,Consolas\ Regular:h14,Courier\ New\ Regular:h14
-      elseif WINDOWS() && has("gui_running")
-          set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h10,Courier_New:h10
-      endif
-  else
-      if &term == 'xterm' || &term == 'screen'
-          set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
-      endif
-      "set term=builtin_ansi       " Make arrow and other keys work
-  endif
+  " coc.vim use tab key for trigger completion
+  inoremap <silent><expr> <TAB>
+    \ pumvisible() ? "\<C-n>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ coc#refresh()
+  inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+
+  " vim-airline
+  " let g:airline_statusline_ontop=1
+
+  " emmet
+  " let g:user_emmet_expandabbr_key='<Tab>'
+  " imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
 
 " ==========
 " Functions
@@ -257,6 +251,11 @@
       else
           set background=dark
       endif
+  endfunction
+
+  function! s:check_back_space() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
   endfunction
 
   function! s:ExpandFilenameAndExecute(command, file)
