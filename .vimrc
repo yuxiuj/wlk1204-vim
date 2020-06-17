@@ -20,6 +20,7 @@
 " Windows Compatible
 " ==========
   set nocompatible  " Must be first line
+
   if !WINDOWS()
       set shell=/bin/sh
   endif
@@ -30,7 +31,6 @@
 " ==========
 " GUI Settings
 " ==========
-  " GVIM- (here instead of .gvimrc)
   if has('gui_running')
       set guioptions-=T           " Remove the toolbar
       set lines=40                " 40 lines of text instead of 24
@@ -57,7 +57,6 @@
   endif
 
   call plug#begin('~/.vim/plugged')
-  Plug 'altercation/vim-colors-solarized'
   Plug 'scrooloose/nerdtree'
   Plug 'ryanoasis/vim-devicons'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -71,6 +70,11 @@
   Plug 'bling/vim-bufferline'
   Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
   Plug 'ctrlpvim/ctrlp.vim'
+  Plug 'tomasiser/vim-code-dark'
+  Plug 'terryma/vim-multiple-cursors'
+  Plug 'leafgarland/typescript-vim'
+  Plug 'peitalin/vim-jsx-typescript'
+  Plug 'rakr/vim-one'
   call plug#end()
 
 " ==========
@@ -86,11 +90,12 @@
   set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
   set virtualedit=onemore             " Allow for cursor beyond last character
   set history=1000                    " Store a ton of history (default is 20)
-  set spell                           " Spell checking on
+  set nospell                           " Spell checking on
   set hidden                          " Allow buffer switching without saving
   set iskeyword-=.                    " '.' is an end of word designator
   set iskeyword-=#                    " '#' is an end of word designator
   set iskeyword-=-                    " '-' is an end of word designator
+
   if has('clipboard')
       if has('unnamedplus')           " When possible use + register for copy-paste
           set clipboard=unnamed,unnamedplus
@@ -115,8 +120,8 @@
   set pastetoggle=<F12>               " pastetoggle (sane indentation on pastes)
   set comments=sl:/*,mb:*,elx:*/      " auto format comment blocks
   filetype plugin indent on           " Automatically detect file types.
-  autocmd BufNewFile,BufRead *.ts set filetype=typescript
-  autocmd BufNewFile,BufRead *.tsx set filetype=typescript
+  autocmd BufNewFile,BufRead *.tsx set filetype=typescript.tsx syntax=typescript.tsx
+  autocmd BufNewFile,BufRead *.jsx set filetype=javascript.jsx syntax=javascript.jsx
   " scriptencoding utf-8
   " autocmd FileType html,css,javascript,javascriptreact,typescript,json,typescriptreact setlocal tabstop=2 shiftwidth=2 softtabstop=2
   " autocmd FileType haskell,rust,typescript,javascript setlocal nospell
@@ -125,9 +130,9 @@
 " Vim UI
 " ==========
   syntax enable
-  set background=dark
   " solarized gruvbox
   colorscheme gruvbox
+  set background=dark
   set termguicolors
   highlight clear SignColumn
   highlight CocErrorHighlight ctermfg=Red  guifg=#ff0000
@@ -211,13 +216,15 @@
   map <leader>1 <C-h>
   map <leader>2 <C-l>
   map <leader>e :NERDTreeToggle<CR>
-  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+  " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
   nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+  " Remap keys for gotos
+  nmap <silent> gd <Plug>(coc-definition)
   " coc.vim use tab key for trigger completion
   inoremap <silent><expr> <TAB>
     \ pumvisible() ? "\<C-n>" :
     \ <SID>check_back_space() ? "\<TAB>" :
-    \ coc#refresh()
+  \ coc#refresh()
   inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
   " let g:airline_statusline_ontop=1
   " let g:user_emmet_expandabbr_key='<Tab>'
