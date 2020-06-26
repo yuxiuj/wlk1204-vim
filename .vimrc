@@ -64,17 +64,17 @@
   Plug 'scrooloose/nerdcommenter'
   Plug 'mattn/emmet-vim'
   Plug 'raimondi/delimitMate'
-  Plug 'morhetz/gruvbox'
   Plug 'vim-airline/vim-airline'
   Plug 'easymotion/vim-easymotion'
-  Plug 'bling/vim-bufferline'
   Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
   Plug 'ctrlpvim/ctrlp.vim'
-  Plug 'tomasiser/vim-code-dark'
   Plug 'terryma/vim-multiple-cursors'
   Plug 'leafgarland/typescript-vim'
   Plug 'peitalin/vim-jsx-typescript'
-  Plug 'rakr/vim-one'
+  Plug 'morhetz/gruvbox'
+  Plug 'KeitaNakamura/neodark.vim'
+  Plug 'joshdick/onedark.vim'
+
   call plug#end()
 
 " ==========
@@ -129,9 +129,9 @@
 " ==========
 " Vim UI
 " ==========
-  syntax enable
-  " solarized gruvbox
-  colorscheme gruvbox
+  syntax on
+  " solarized gruvbox neodark onedark
+  colorscheme neodark
   set background=dark
   set termguicolors
   highlight clear SignColumn
@@ -215,9 +215,11 @@
   let NERDTreeQuitOnOpen=0
   map <leader>1 <C-h>
   map <leader>2 <C-l>
-  map <leader>e :NERDTreeToggle<CR>
+  map <C-e> :NERDTreeToggle<CR>
+  map <leader>e :NERDTreeFind<CR>
   " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
   nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+
   " Remap keys for gotos
   nmap <silent> gd <Plug>(coc-definition)
   " coc.vim use tab key for trigger completion
@@ -226,9 +228,27 @@
     \ <SID>check_back_space() ? "\<TAB>" :
   \ coc#refresh()
   inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
-  " let g:airline_statusline_ontop=1
   " let g:user_emmet_expandabbr_key='<Tab>'
   " imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+  "
+  " let g:airline#extensions#tabline#tab_nr_type = 2
+  " let g:airline#extensions#tabline#buffer_nr_show = 1
+  " let g:airline_statusline_ontop=1
+   let g:airline#extensions#tabline#enabled = 1
+  " let g:airline#extensions#tabline#buffer_idx_mode = 1
+  " let g:airline_extensions#tabline#show_buffers = 0
+  " let g:airline#extensions#tabline#show_tab_count = 1
+  " let g:airline#extensions#tabline#show_tab_nr = 1
+  "
+  let NERDTreeDirArrowExpandable = "\u00a0"
+  let NERDTreeDirArrowCollapsible = "\u00a0"
+  let NERDTreeNodeDelimiter = "\x07"
+
+  let g:user_emmet_leader_key='<C-J>'
+
+  " if exists("g:loaded_webdevicons")
+    " call webdevicons#refresh()
+  " endif
 
 " ==========
 " Functions
