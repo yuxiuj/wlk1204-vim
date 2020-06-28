@@ -50,6 +50,7 @@
 " ==========
 " Plugins
 " ==========
+
   if empty(glob('~/.vim/autoload/plug.vim'))
       silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
           \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -71,7 +72,6 @@
   Plug 'terryma/vim-multiple-cursors'
   Plug 'leafgarland/typescript-vim'
   Plug 'peitalin/vim-jsx-typescript'
-  Plug 'morhetz/gruvbox'
   Plug 'KeitaNakamura/neodark.vim'
   Plug 'joshdick/onedark.vim'
 
@@ -90,11 +90,11 @@
   set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
   set virtualedit=onemore             " Allow for cursor beyond last character
   set history=1000                    " Store a ton of history (default is 20)
-  set nospell                           " Spell checking on
+  set nospell                         " Spell checking on
   set hidden                          " Allow buffer switching without saving
-  set iskeyword-=.                    " '.' is an end of word designator
-  set iskeyword-=#                    " '#' is an end of word designator
-  set iskeyword-=-                    " '-' is an end of word designator
+  " set iskeyword-=.                    " '.' is an end of word designator
+  " set iskeyword-=#                    " '#' is an end of word designator
+  " set iskeyword-=-                    " '-' is an end of word designator
 
   if has('clipboard')
       if has('unnamedplus')           " When possible use + register for copy-paste
@@ -122,9 +122,7 @@
   filetype plugin indent on           " Automatically detect file types.
   autocmd BufNewFile,BufRead *.tsx set filetype=typescript.tsx syntax=typescript.tsx
   autocmd BufNewFile,BufRead *.jsx set filetype=javascript.jsx syntax=javascript.jsx
-  " scriptencoding utf-8
-  " autocmd FileType html,css,javascript,javascriptreact,typescript,json,typescriptreact setlocal tabstop=2 shiftwidth=2 softtabstop=2
-  " autocmd FileType haskell,rust,typescript,javascript setlocal nospell
+	scriptencoding utf-8
 
 " ==========
 " Vim UI
@@ -132,10 +130,11 @@
   syntax on
   " solarized gruvbox neodark onedark
   colorscheme neodark
+  let g:neodark#background = '#202020'
   set background=dark
   set termguicolors
   highlight clear SignColumn
-  highlight CocErrorHighlight ctermfg=Red  guifg=#ff0000
+	highlight CocErrorHighlight ctermfg=Red  guifg=#ff0000
   if has('cmdline_info')
       set ruler                   " Show the ruler
       set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
@@ -146,8 +145,8 @@
   set cursorline                  " Highlight current line
   set backspace=indent,eol,start  " Backspace for dummies
   set linespace=0                 " No extra spaces between rows
-  set relativenumber              " Show relative line numbers
-  set number                      " Show current line number
+  " set relativenumber            " Show relative line numbers
+  set nonumber                    " not show current line number
   set showmatch                   " Show matching brackets/parenthesis
   set incsearch                   " Find as you type search
   set hlsearch                    " Highlight search terms
@@ -176,30 +175,28 @@
   noremap k gk
   nnoremap Y y$
   noremap <leader>bg :call ToggleBG()<CR>
-  nnoremap <Leader>bl :ls<CR>
-  nnoremap <Leader>bp :bp<CR>
-  nnoremap <Leader>bn :bn<CR>
-  for i in range(1, 20)
-    execute "nnoremap \<Leader>b" . i . " :" . i . "b<CR>"
-  endfor
+
+  " window
   map <C-J> <C-W>j<C-W>_
   map <C-K> <C-W>k<C-W>_
   map <C-L> <C-W>l<C-W>_
   map <C-H> <C-W>h<C-W>_
-  map <leader>ew :e %%
-  map <leader>es :sp %%
-  map <leader>ep :vsp %%
-  map <leader>et :tabe %%
-  " Adjust viewports to the same size
+
+  " buffer
+  nnoremap <Leader>bl :ls<CR>
+  nnoremap <Leader>bp :bp<CR>
+  nnoremap <Leader>bn :bn<CR>
+  for i in range(1, 20)
+    execute "nnoremap <Leader>b" . i . " :" . i . "b<CR>"
+  endfor
+  execute "nnoremap <Leader>vs :vs<CR>"
+ " Adjust viewports to the same size
   map <Leader>= <C-w>=
   " Easier horizontal scrolling
   map zl zL
   map zh zH
-  " Change Working Directory to that of the current file
-  cmap cwd lcd %:p:h
-  cmap cd. lcd %:p:h
   nmap <silent> <leader>/ :set invhlsearch<CR>
-" Map <Leader>ff to display all lines with keyword under cursor and ask which one to jump to
+  " Map <Leader>ff to display all lines with keyword under cursor and ask which one to jump to
   nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
   vnoremap < <gv
   vnoremap > >gv
@@ -209,46 +206,47 @@
 " ==========
 " Plugin Settings
 " ==========
+  " ctrlp
   let g:ctrlp_map = '<leader>p'
+
+  " whichkey
+  nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+
+
+  " NERDTree
   let g:NERDSpaceDelims=1
   let NERDTreeShowHidden=1                   " show hidden files
   let NERDTreeQuitOnOpen=0
+  let NERDTreeMinimalUI = 1                  " disable that old “Press ? for help”
+  let NERDTreeAutoDeleteBuffer = 1           " https://medium.com/@victormours/a-better-nerdtree-setup-3d3921abc0b9
+  let NERDTreeDirArrowExpandable = "\u00a0"  " NERDTree remove arrow
+  let NERDTreeDirArrowCollapsible = "\u00a0"
+  let NERDTreeNodeDelimiter = "\x07"
   map <leader>1 <C-h>
   map <leader>2 <C-l>
   map <C-e> :NERDTreeToggle<CR>
   map <leader>e :NERDTreeFind<CR>
-  " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-  nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+
+  " airline
+  let g:airline#extensions#tabline#enabled = 1        " tabline enabled
+  let g:airline#extensions#tabline#fnamemod = ':t'    " only show filename
+  let g:airline#extensions#tabline#buffer_nr_show = 1
 
   " Remap keys for gotos
   nmap <silent> gd <Plug>(coc-definition)
+
   " coc.vim use tab key for trigger completion
   inoremap <silent><expr> <TAB>
     \ pumvisible() ? "\<C-n>" :
     \ <SID>check_back_space() ? "\<TAB>" :
   \ coc#refresh()
   inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
+
+  " coc
+  " let g:user_emmet_leader_key='<C-J>'
+
   " let g:user_emmet_expandabbr_key='<Tab>'
   " imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
-  "
-  " let g:airline#extensions#tabline#tab_nr_type = 2
-  " let g:airline#extensions#tabline#buffer_nr_show = 1
-  " let g:airline_statusline_ontop=1
-   let g:airline#extensions#tabline#enabled = 1
-  " let g:airline#extensions#tabline#buffer_idx_mode = 1
-  " let g:airline_extensions#tabline#show_buffers = 0
-  " let g:airline#extensions#tabline#show_tab_count = 1
-  " let g:airline#extensions#tabline#show_tab_nr = 1
-  "
-  let NERDTreeDirArrowExpandable = "\u00a0"
-  let NERDTreeDirArrowCollapsible = "\u00a0"
-  let NERDTreeNodeDelimiter = "\x07"
-
-  let g:user_emmet_leader_key='<C-J>'
-
-  " if exists("g:loaded_webdevicons")
-    " call webdevicons#refresh()
-  " endif
 
 " ==========
 " Functions
@@ -279,3 +277,19 @@
 
   execute "noremap " . s:edit_config_mapping " :call <SID>EditVimrcConfig()<CR>"
   execute "noremap " . s:apply_config_mapping . " :source ~/.vimrc<CR>"
+
+  function! WindowNumber(...)
+    let builder = a:1
+    let context = a:2
+    call builder.add_section('airline_b', '%{tabpagewinnr(tabpagenr())}')
+    return 0
+  endfunction
+
+  call airline#add_statusline_func('WindowNumber')
+  call airline#add_inactive_statusline_func('WindowNumber')
+
+  " augroup nerdtreehidecwd
+    " autocmd!
+    " autocmd FileType nerdtree syntax match NERDTreeHideCWD #^[</].*$# conceal
+  " augroup end
+
