@@ -212,6 +212,8 @@
   " whichkey
   nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 
+  " delimitMate
+  let g:delimitMate_expand_cr = 1            " auto indent
 
   " NERDTree
   let g:NERDSpaceDelims=1
@@ -226,6 +228,18 @@
   map <leader>2 <C-l>
   map <C-e> :NERDTreeToggle<CR>
   map <leader>e :NERDTreeFind<CR>
+
+  " Hide NERDTree cwd
+  " augroup nerdtreehidecwd
+    " autocmd!
+    " autocmd FileType nerdtree setlocal conceallevel=3 | syntax match NERDTreeHideCWD #^[</].*$# conceal
+  " augroup end
+  "
+  " Hide NERDTree folder trailing slashes
+  augroup nerdtreehidetirslashes
+    autocmd!
+    autocmd FileType nerdtree syntax match NERDTreeDirSlash #/$# containedin=NERDTreeDir conceal contained
+  augroup end
 
   " airline
   let g:airline#extensions#tabline#enabled = 1        " tabline enabled
@@ -287,9 +301,4 @@
 
   call airline#add_statusline_func('WindowNumber')
   call airline#add_inactive_statusline_func('WindowNumber')
-
-  " augroup nerdtreehidecwd
-    " autocmd!
-    " autocmd FileType nerdtree syntax match NERDTreeHideCWD #^[</].*$# conceal
-  " augroup end
 
