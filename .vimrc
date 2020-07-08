@@ -92,9 +92,6 @@
   set history=1000                    " Store a ton of history (default is 20)
   set nospell                         " Spell checking on
   set hidden                          " Allow buffer switching without saving
-  " set iskeyword-=.                    " '.' is an end of word designator
-  " set iskeyword-=#                    " '#' is an end of word designator
-  " set iskeyword-=-                    " '-' is an end of word designator
 
   if has('clipboard')
       if has('unnamedplus')           " When possible use + register for copy-paste
