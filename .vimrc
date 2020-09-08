@@ -73,7 +73,7 @@
   Plug 'leafgarland/typescript-vim'
   Plug 'peitalin/vim-jsx-typescript'
   Plug 'KeitaNakamura/neodark.vim'
-  Plug 'joshdick/onedark.vim'
+  " Plug 'joshdick/onedark.vim'
 
   call plug#end()
 
@@ -226,12 +226,6 @@
   map <C-e> :NERDTreeToggle<CR>
   map <leader>e :NERDTreeFind<CR>
 
-  " Hide NERDTree cwd
-  " augroup nerdtreehidecwd
-    " autocmd!
-    " autocmd FileType nerdtree setlocal conceallevel=3 | syntax match NERDTreeHideCWD #^[</].*$# conceal
-  " augroup end
-  "
   " Hide NERDTree folder trailing slashes
   augroup nerdtreehidetirslashes
     autocmd!
@@ -298,4 +292,3 @@
 
   call airline#add_statusline_func('WindowNumber')
   call airline#add_inactive_statusline_func('WindowNumber')
-
